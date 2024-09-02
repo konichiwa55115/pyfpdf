@@ -1117,7 +1117,7 @@ class FPDF(object):
                 dest='F'
         if PY3K:
             # manage binary data as latin1 until PEP461 or similar is implemented
-            buffer = self.buffer.encode("latin1")
+            buffer = self.buffer.encode("UTF-8")
         else:
             buffer = self.buffer
         if dest in ('I', 'D'):
