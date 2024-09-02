@@ -96,7 +96,7 @@ class FPDF(object):
             'times': 'Times-Roman', 'timesB': 'Times-Bold',
             'timesI': 'Times-Italic', 'timesBI': 'Times-BoldItalic',
             'symbol': 'Symbol', 'zapfdingbats': 'ZapfDingbats'}
-        self.core_fonts_encoding = "latin-1"
+        self.core_fonts_encoding = "utf-8"
         # Scale factor
         if unit == "pt":
             self.k = 1
@@ -1117,7 +1117,7 @@ class FPDF(object):
                 dest='F'
         if PY3K:
             # manage binary data as latin1 until PEP461 or similar is implemented
-            buffer = self.buffer.encode("UTF-8")
+            buffer = self.buffer.encode("utf-8")
         else:
             buffer = self.buffer
         if dest in ('I', 'D'):
@@ -1145,7 +1145,7 @@ class FPDF(object):
                 return txt.encode(self.core_fonts_encoding)
         else:
             if not self.unifontsubset and self.core_fonts_encoding:
-                return txt.encode(self.core_fonts_encoding).decode("latin-1")
+                return txt.encode(self.core_fonts_encoding).decode("utf-8")
         return txt
 
     def _dochecks(self):
@@ -1223,7 +1223,7 @@ class FPDF(object):
             content = self.pages[n]["content"]
             if self.compress:
                 # manage binary data as latin1 until PEP461 or similar is implemented
-                p = content.encode("latin1") if PY3K else content
+                p = content.encode("utf-8") if PY3K else content
                 p = zlib.compress(p)
             else:
                 p = content
@@ -1427,7 +1427,7 @@ class FPDF(object):
                 cidtogidmap = ''.join(cidtogidmap)
                 if PY3K:
                     # manage binary data as latin1 until PEP461-like function is implemented
-                    cidtogidmap = cidtogidmap.encode("latin1")
+                    cidtogidmap = cidtogidmap.encode("utf-8")
                 cidtogidmap = zlib.compress(cidtogidmap);
                 self._newobj()
                 self._out('<</Length ' + str(len(cidtogidmap)) + '')
@@ -1844,14 +1844,14 @@ class FPDF(object):
         #Extract info from a PNG file
         f = self.load_resource("image", filename)
         #Check signature
-        magic = f.read(8).decode("latin1")
+        magic = f.read(8).decode("utf-8")
         signature = '\x89'+'PNG'+'\r'+'\n'+'\x1a'+'\n'
-        if not PY3K: signature = signature.decode("latin1")
+        if not PY3K: signature = signature.decode("utf-8")
         if(magic!=signature):
             self.error('Not a PNG file: ' + filename)
         #Read header chunk
         f.read(4)
-        chunk = f.read(4).decode("latin1")
+        chunk = f.read(4).decode("utf-8")
         if(chunk!='IHDR'):
             self.error('Incorrect PNG file: ' + filename)
         w=self._freadint(f)
@@ -1888,7 +1888,7 @@ class FPDF(object):
         n=1
         while n != None:
             n=self._freadint(f)
-            type=f.read(4).decode("latin1")
+            type=f.read(4).decode("utf-8")
             if(type=='PLTE'):
                 #Read palette
                 pal=f.read(n)
@@ -1901,7 +1901,7 @@ class FPDF(object):
                 elif(ct==2):
                     trns=[ord(substr(t,1,1)),ord(substr(t,3,1)),ord(substr(t,5,1))]
                 else:
-                    pos=t.find('\x00'.encode("latin1"))
+                    pos=t.find('\x00'.encode("utf-8"))
                     if(pos!=-1):
                         trns=[pos,]
                 f.read(4)
@@ -1978,9 +1978,9 @@ class FPDF(object):
         #Add a line to the document
         if PY3K and isinstance(s, bytes):
             # manage binary data as latin1 until PEP461-like function is implemented
-            s = s.decode("latin1")
+            s = s.decode("utf-8")
         elif not PY3K and isinstance(s, unicode):
-            s = s.encode("latin1")    # default encoding (font name and similar)
+            s = s.encode("utf-8")    # default encoding (font name and similar)
         elif not isinstance(s, basestring):
             s = str(s)
         if(self.state == 2):
